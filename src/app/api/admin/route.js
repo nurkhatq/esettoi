@@ -21,20 +21,18 @@ export async function GET() {
         const entries = [];
         // Skip header at index 0
         for (let i = 1; i < lines.length; i++) {
-            // Very naive CSV parsing to handle the basic format we create
-            // Format: "id","timestamp","name","status"
             const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
             if (matches && matches.length >= 4) {
                 entries.push({
                     id: matches[0].replace(/^"|"$/g, ''),
                     timestamp: matches[1].replace(/^"|"$/g, ''),
                     name: matches[2].replace(/^"|"$/g, '').replace(/""/g, '"'),
-                    status: matches[3].replace(/^"|"$/g, '')
+                    status: matches[3].replace(/^"|"$/g, ''),
+                    wishes: matches.length >= 5 ? matches[4].replace(/^"|"$/g, '').replace(/""/g, '"') : ''
                 });
             }
         }
         
-        // Sort newest first
         entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         return NextResponse.json({ entries });

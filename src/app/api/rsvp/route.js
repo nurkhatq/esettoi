@@ -13,7 +13,7 @@ const getCsvPath = () => {
 export async function POST(request) {
     try {
         const body = await request.json();
-        const { name, status } = body;
+        const { name, status, wishes } = body;
         
         if (!name || !status) {
             return NextResponse.json({ error: 'Name and status are required' }, { status: 400 });
@@ -21,9 +21,14 @@ export async function POST(request) {
 
         const timestamp = new Date().toISOString();
         const entryId = Date.now().toString();
+        const cleanWishes = wishes ? wishes.trim() : '';
 
         // 1. Send to Telegram
-        const message = `🔔 **Жаңа жауап (50 жас):**\n\n👤 Аты-жөні: ${name}\n❓ Статусы: ${status}`;
+        let message = `🔔 **Жаңа жауап (60 жас):**\n\n👤 Аты-жөні: ${name}\n❓ Статусы: ${status}`;
+        if (cleanWishes) {
+            message += `\n💬 Тілегі: ${cleanWishes}`;
+        }
+        
         const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         
         try {
@@ -33,22 +38,21 @@ export async function POST(request) {
                 body: JSON.stringify({
                     chat_id: TELEGRAM_CHAT_ID,
                     text: message,
-                    parse_mode: 'Markdown'
                 })
             });
         } catch (botErr) {
             console.error("Telegram error:", botErr);
-            // We continue even if telegram fails
         }
 
         // 2. Save to CSV locally
-        // WARNING: On Vercel this will not persist across functions.
         const csvPath = getCsvPath();
-        const csvLine = `"${entryId}","${timestamp}","${name.replace(/"/g, '""')}","${status}"\n`;
+        const safeName = name.replace(/"/g, '""');
+        const safeWishes = cleanWishes.replace(/"/g, '""').replace(/\n/g, ' '); // remove newlines for simple CSV
+        const csvLine = `"${entryId}","${timestamp}","${safeName}","${status}","${safeWishes}"\n`;
         
         if (!fs.existsSync(csvPath)) {
             // Create headers if doesn't exist
-            fs.writeFileSync(csvPath, '"id","timestamp","name","status"\n');
+            fs.writeFileSync(csvPath, '"id","timestamp","name","status","wishes"\n');
         }
         fs.appendFileSync(csvPath, csvLine);
 
