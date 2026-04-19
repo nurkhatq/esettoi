@@ -23,7 +23,7 @@ export async function POST(request) {
         const entryId = Date.now().toString();
         const cleanWishes = wishes ? wishes.trim() : '';
 
-        // 1. Send to Telegram
+        // 1. Send to Telegram with 3 SECOND TIMEOUT so it doesn't hang the CSV append!
         let message = `🔔 **Жаңа жауап (60 жас):**\n\n👤 Аты-жөні: ${name}\n❓ Статусы: ${status}`;
         if (cleanWishes) {
             message += `\n💬 Тілегі: ${cleanWishes}`;
@@ -32,22 +32,28 @@ export async function POST(request) {
         const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 sec timeout
+
             await fetch(telegramUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chat_id: TELEGRAM_CHAT_ID,
                     text: message,
-                })
-            });
+                }),
+                signal: controller.signal
+            }).catch(e => console.error("Fetch promise error:", e.message));
+
+            clearTimeout(timeoutId);
         } catch (botErr) {
-            console.error("Telegram error:", botErr);
+            console.error("Telegram catch error:", botErr.message);
         }
 
-        // 2. Save to CSV locally
+        // 2. Save to CSV locally regardless of Telegram success
         const csvPath = getCsvPath();
         const safeName = name.replace(/"/g, '""');
-        const safeWishes = cleanWishes.replace(/"/g, '""').replace(/\n/g, ' '); // remove newlines for simple CSV
+        const safeWishes = cleanWishes.replace(/"/g, '""').replace(/\n/g, ' ');
         const csvLine = `"${entryId}","${timestamp}","${safeName}","${status}","${safeWishes}"\n`;
         
         if (!fs.existsSync(csvPath)) {

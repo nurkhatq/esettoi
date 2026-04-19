@@ -6,9 +6,7 @@ const getCsvPath = () => {
     return path.join(process.cwd(), 'data.csv');
 };
 
-export const dynamic = 'force-dynamic';
-
-export async function GET() {
+export async function GET(request) {
     try {
         const csvPath = getCsvPath();
         if (!fs.existsSync(csvPath)) {
@@ -19,7 +17,6 @@ export async function GET() {
         const lines = content.split('\n').filter(line => line.trim().length > 0);
         
         const entries = [];
-        // Skip header at index 0
         for (let i = 1; i < lines.length; i++) {
             const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
             if (matches && matches.length >= 4) {

@@ -23,10 +23,8 @@ export async function POST(request) {
         const content = fs.readFileSync(csvPath, 'utf-8');
         const lines = content.split('\n').filter(line => line.trim().length > 0);
         
-        // Keep header and filter out the row matching the id
         const newLines = lines.filter((line, index) => {
             if (index === 0) return true; // keep header
-            // Read first column representing ID
             const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/);
             if (matches && matches[1]) {
                 const rowId = matches[1].replace(/^"|"$/g, '');
