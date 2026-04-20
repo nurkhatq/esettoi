@@ -347,10 +347,7 @@ backface-visibility: hidden;
 <span id="minutes" style="font-size: 32px; font-weight: bold; color: #333; background: rgba(173,154,107,0.1); padding: 15px; border-radius: 8px; min-width: 60px;">00</span>
 <span style="font-size: 14px; margin-top: 5px; color: #666;">мин</span>
 </div>
-<div style="display:flex; flex-direction:column; align-items:center;">
-<span id="seconds" style="font-size: 32px; font-weight: bold; color: #AD9A6B; background: rgba(173,154,107,0.1); padding: 15px; border-radius: 8px; min-width: 60px;">00</span>
-<span style="font-size: 14px; margin-top: 5px; color: #AD9A6B;">сек</span>
-</div>
+
 </div>
 <script>
             function updateTimer() {
@@ -367,12 +364,12 @@ backface-visibility: hidden;
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
 
                 document.getElementById('days').innerText = days < 10 ? '0'+days : days;
                 document.getElementById('hours').innerText = hours < 10 ? '0'+hours : hours;
                 document.getElementById('minutes').innerText = minutes < 10 ? '0'+minutes : minutes;
-                document.getElementById('seconds').innerText = seconds < 10 ? '0'+seconds : seconds;
+                
                 
                 document.getElementById('countdown-timer').style.opacity = 1;
             }
@@ -439,4 +436,4 @@ backface-visibility: hidden;
         </script>
 </div>
 </div></div> </div> </div> <!-- nominify end --> </div> </div> </div> </div> </div></div></div></div><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer>
-<button class="jsx-3487016174 tilda-audio-player-button" style="background-color: rgb(139, 115, 85); min-height: 50px; box-shadow: rgba(139, 115, 85, 0.4) 0px 8px 16px, rgba(0, 0, 0, 0.15) 0px -4px 8px inset;"><div class="jsx-3487016174 tilda-play-pause-circle" style="background-color: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px;"><div class="jsx-3487016174 tilda-inner-circle" style="background-color: rgb(139, 115, 85);"><svg class="jsx-3487016174 tilda-play-icon" fill="#ffffff" height="14" viewbox="0 0 24 24" width="14"><path class="jsx-3487016174" d="M8 5v14l11-7z"></path></svg></div></div><span class="jsx-3487016174 tilda-button-text" style="color: rgb(255, 255, 255); font-family: KZPFMonumentaPro, Arial, sans-serif; font-size: 14px;"></span></button></body></html>
+</body></html>
