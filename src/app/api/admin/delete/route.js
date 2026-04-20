@@ -1,10 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const getCsvPath = () => {
-    return path.join(process.cwd(), 'data.csv');
-};
+import { Client } from 'pg';
 
 export async function POST(request) {
     try {
@@ -12,32 +7,19 @@ export async function POST(request) {
         const { id } = body;
         
         if (!id) {
-            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+            return NextResponse.json({ error: 'ID required' }, { status: 400 });
         }
 
-        const csvPath = getCsvPath();
-        if (!fs.existsSync(csvPath)) {
-            return NextResponse.json({ error: 'File not found' }, { status: 404 });
-        }
-
-        const content = fs.readFileSync(csvPath, 'utf-8');
-        const lines = content.split('\n').filter(line => line.trim().length > 0);
-        
-        const newLines = lines.filter((line, index) => {
-            if (index === 0) return true; // keep header
-            const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/);
-            if (matches && matches[1]) {
-                const rowId = matches[1].replace(/^"|"$/g, '');
-                return rowId !== id;
-            }
-            return true;
+        const client = new Client({
+            connectionString: process.env.DATABASE_URL
         });
-
-        fs.writeFileSync(csvPath, newLines.join('\n') + '\n');
-
+        await client.connect();
+        await client.query('DELETE FROM guests WHERE id = $1', [id]);
+        await client.end();
+        
         return NextResponse.json({ success: true });
-    } catch (err) {
-        console.error("Admin Delete Error:", err);
+    } catch (error) {
+        console.error('Error deleting:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
