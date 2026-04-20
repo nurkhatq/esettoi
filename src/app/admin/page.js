@@ -42,12 +42,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>Қонақтар тізімі (Админка)</h1>
-      
-      <div style={{ background: "#fff3cd", padding: "15px", borderRadius: "8px", marginBottom: "20px", border: "1px solid #ffeeba", color: "#856404" }}>
-        <strong>Назар аударыңыз (Vercel):</strong> Бұл жазбалар уақытша файлда (data.csv) сақталады. Vercel сервері ұйықтағанда бұл файл өшіп қалуы мүмкін. Тізім Телеграмға міндетті түрде түсіп отырады!
-      </div>
+    
 
       {loading ? (
         <p>Жүктелуде...</p>
