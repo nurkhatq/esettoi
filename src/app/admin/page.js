@@ -42,8 +42,8 @@ export default function AdminDashboard() {
   };
 
   return (
-    
-
+    <div style={{ padding: "20px", fontFamily: "sans-serif", background: "#f5f5f5", minHeight: "100vh" }}>
+      <h1 style={{ marginBottom: "20px" }}>Қонақтар тізімі (Админка)</h1>
       {loading ? (
         <p>Жүктелуде...</p>
       ) : (
